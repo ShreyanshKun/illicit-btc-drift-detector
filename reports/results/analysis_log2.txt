@@ -1,0 +1,48 @@
+=== drift ===
+feature drift computed
+retrain rf static (train 1-27) {'f1': 0.693, 'pr_auc': 0.784}
+retrain rf expanding window {'f1': 0.82, 'pr_auc': 0.898}
+retrain rf sliding window (10 steps) {'f1': 0.81, 'pr_auc': 0.881}
+retrain xgb static (train 1-27) {'f1': 0.771, 'pr_auc': 0.783}
+retrain xgb expanding window {'f1': 0.873, 'pr_auc': 0.915}
+retrain xgb sliding window (10 steps) {'f1': 0.864, 'pr_auc': 0.913}
+--- drift done (320s)
+=== unstable ===
+unstable rf 0.0 [0.965, 0.757]
+unstable rf 0.1 [0.967, 0.787]
+unstable rf 0.25 [0.966, 0.787]
+unstable rf 0.5 [0.964, 0.778]
+unstable xgb 0.0 [0.95, 0.776]
+unstable xgb 0.1 [0.971, 0.791]
+unstable xgb 0.25 [0.968, 0.772]
+unstable xgb 0.5 [0.954, 0.709]
+--- unstable done (350s)
+=== importance ===
+importance rank correlation across periods:
+              steps_1-13  steps_14-27  steps_28-34
+steps_1-13        1.000         0.40        0.322
+steps_14-27       0.400         1.00        0.390
+steps_28-34       0.322         0.39        1.000
+--- importance done (432s)
+=== errors ===
+{
+  "fn_rf": 301,
+  "fn_xgb": 352,
+  "fn_both": 301,
+  "fn_jaccard": 0.8551136363636364,
+  "fp_rf": 201,
+  "fp_xgb": 69,
+  "fp_both": 40,
+  "fp_jaccard": 0.17391304347826086,
+  "pr_auc_diff_rf_minus_xgb_mean": 0.0007477065028538277,
+  "pr_auc_diff_ci": [
+    -0.004560475455100285,
+    0.005383161720612652
+  ],
+  "f1_diff_rf_minus_xgb_mean": -0.019746654018139614,
+  "f1_diff_ci": [
+    -0.03291027278013817,
+    -0.007165198225869668
+  ]
+}
+--- errors done (448s)

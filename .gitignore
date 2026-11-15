@@ -1,0 +1,22 @@
+# Raw / large data (download separately, see README)
+data/raw/
+data/processed/master.parquet
+data/processed/edges.parquet
+
+# Python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.pytest_cache/
+.venv/
+venv/
+
+# Secrets / local config
+.env
+.streamlit/secrets.toml
+kaggle.json
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/

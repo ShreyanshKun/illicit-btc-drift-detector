@@ -1,0 +1,38 @@
+=== random ===
+random-vs-temporal logreg temporal 0.255 0.257
+random-vs-temporal logreg random 0.766 0.789
+random-vs-temporal rf temporal 0.757 0.784
+random-vs-temporal rf random 0.945 0.982
+random-vs-temporal xgb temporal 0.776 0.783
+random-vs-temporal xgb random 0.955 0.988
+--- random done (20s)
+=== ablation ===
+ablation rf local_only_93 [0.957, 0.779]
+ablation rf aggregated_only_72 [0.751, 0.574]
+ablation rf raw_165 [0.965, 0.757]
+ablation rf raw_165+engineered [0.967, 0.796]
+ablation xgb local_only_93 [0.937, 0.721]
+ablation xgb aggregated_only_72 [0.75, 0.627]
+ablation xgb raw_165 [0.95, 0.776]
+ablation xgb raw_165+engineered [0.96, 0.762]
+--- ablation done (46s)
+=== drift ===
+feature drift computed
+Traceback (most recent call last):
+  File "D:\IDSE Proj\run_analysis.py", line 220, in <module>
+    {"random": lambda: stage_random(df, train, val, test),
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ...<3 lines>...
+     "importance": lambda: stage_importance(df, train, val, test),
+     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     "errors": lambda: stage_errors(test)}[s]()
+     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\IDSE Proj\run_analysis.py", line 222, in <lambda>
+    "drift": lambda: stage_drift(master, df, train, val, test),
+                     ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\IDSE Proj\run_analysis.py", line 112, in stage_drift
+    print("retrain", name, sname, s.iloc[0][["f1", "pr_auc"]].round(3).to_dict())
+                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "C:\Users\saish\anaconda3\Lib\site-packages\pandas\core\series.py", line 2821, in round
+    raise TypeError("Expected numeric dtype, got object instead.")
+TypeError: Expected numeric dtype, got object instead.
