@@ -15,7 +15,7 @@ SKY = "#38bdf8"
 
 CSS = f"""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600&family=Manrope:wght@400;600&family=JetBrains+Mono:wght@400;500;700&display=swap');
 html, body, [class*="css"] {{ font-family: 'Manrope', sans-serif; }}
 h1, h2, h3, h4 {{ font-family: 'Unbounded', sans-serif !important; letter-spacing: -0.03em; font-weight: 600 !important; }}
 h3 {{ font-size: 1.25rem !important; }}

@@ -11,7 +11,13 @@ Scenes load three.js r160 from a CDN and need WebGL. Data is injected as JSON.
 import json
 
 IMPORTMAP = """<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
-"three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>"""
+"three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin><link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js">
+<style>#ld{position:absolute;inset:0;z-index:50;background:#0b0b0e;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;transition:opacity .6s;font:600 12px 'JetBrains Mono',monospace;letter-spacing:.2em;color:#f7931a}
+#ld i{width:42px;height:42px;border:3px solid #2a2a35;border-top-color:#f7931a;border-radius:50%;animation:sp .8s linear infinite}@keyframes sp{to{transform:rotate(360deg)}}</style>
+<script>window.csReady=function(){var l=document.getElementById('ld');if(l){l.style.opacity=0;setTimeout(function(){l.remove()},650);}};</script>"""
+LOADER = '<div id="ld"><i></i>LOADING 3D SCENE</div>'
+
 
 FONTS = "<link href=\"https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600&family=Manrope:wght@400;500;600&family=JetBrains+Mono:wght@400;700&display=swap\" rel=\"stylesheet\">"
 
@@ -35,7 +41,7 @@ p{font-size:17px;line-height:1.5;color:#c9c9d4;margin:0 0 18px}
 .flash{position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,rgba(255,71,87,.45),transparent 62%);opacity:0;pointer-events:none;transition:opacity .25s}
 .hint{position:absolute;right:28px;top:20px;font-family:'JetBrains Mono';font-size:11px;color:#6d6d7c;letter-spacing:.12em}
 </style></head><body>
-<canvas id="c"></canvas><div class="shade"></div><div class="flash" id="flash"></div>
+__LOADER__<canvas id="c"></canvas><div class="shade"></div><div class="flash" id="flash"></div>
 <div class="copy"><div class="kick">Intro to Data Science · Elliptic dataset</div>
 <h1>Can a machine spot criminal Bitcoin transactions, and does it keep working when criminals change tactics?</h1>
 <p>Fly through 49 blocks of time. Each ring is two weeks of activity, glowing by how well the model coped.</p>
@@ -50,7 +56,7 @@ const COL = {0:0x6a6a90,1:0x34d399,2:0xffc857,3:0xff4757,4:0x8b8b9c};
 const GAP = 2.4, N = HEALTH.length, L = N*GAP, R = 3.2;
 const canvas = document.getElementById('c');
 const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
-renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+renderer.setPixelRatio(Math.min(window.devicePixelRatio,1.5));
 const scene = new THREE.Scene(); scene.fog = new THREE.FogExp2(0x0b0b0e, 0.042);
 const camera = new THREE.PerspectiveCamera(72, 1, 0.1, 200);
 const rings = [];
@@ -97,12 +103,12 @@ function frame(now){
   rings.forEach((g,i)=>{ if(HEALTH[i]!==0){ g.children[1].material.opacity=0.12+0.07*Math.sin(t*2.2+i*0.5);} });
   renderer.render(scene,camera); requestAnimationFrame(frame);
 }
-requestAnimationFrame(frame);
+requestAnimationFrame(frame); window.csReady();
 </script></body></html>"""
 
 
 def tunnel_html(health):
-    return TUNNEL.replace("__FONTS__", FONTS).replace("__IMPORTMAP__", IMPORTMAP).replace("__HEALTH__", json.dumps(health))
+    return TUNNEL.replace("__FONTS__", FONTS).replace("__IMPORTMAP__", IMPORTMAP).replace("__LOADER__", LOADER).replace("__HEALTH__", json.dumps(health))
 
 
 # ----------------------------------------------------------------------------- universe
@@ -124,7 +130,7 @@ button.pl{background:#f7931a;border:0;border-radius:6px;color:#1a0f00;font-weigh
 .stats b{color:#f2f2f5}
 #tip{position:absolute;pointer-events:none;display:none;background:rgba(11,11,14,.94);border:1px solid #f7931a;border-radius:8px;padding:8px 11px;font-family:'JetBrains Mono';font-size:12px;line-height:1.5;white-space:nowrap}
 </style></head><body>
-<canvas id="c"></canvas>
+__LOADER__<canvas id="c"></canvas>
 <div class="bar">
  <div class="seg" id="modes"><button data-m="truth" class="on">Truth</button><button data-m="verdict">Model verdict</button><button data-m="period">Period</button></div>
  <div class="panel"><span>time travel</span><input id="rng" type="range" min="1" max="49" value="49"><b id="rv">≤ 49</b><button class="pl" id="play">▶ play</button></div>
@@ -136,7 +142,7 @@ import * as THREE from 'three';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 const D = __DATA__; const N = D.n, THR = D.thr;
 const canvas=document.getElementById('c');
-const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true}); renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true}); renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));
 const scene=new THREE.Scene(); scene.fog=new THREE.FogExp2(0x0b0b0e,0.012);
 const camera=new THREE.PerspectiveCamera(55,1,0.1,400); camera.position.set(17,10,20);
 const controls=new OrbitControls(camera,canvas); controls.enableDamping=true; controls.dampingFactor=0.06; controls.autoRotate=true; controls.autoRotateSpeed=0.7; controls.minDistance=6; controls.maxDistance=60;
@@ -184,10 +190,10 @@ canvas.addEventListener('mousemove',e=>{ const r=canvas.getBoundingClientRect();
    tip.innerHTML=`<b>step ${D.step[i]}</b> · ${y?'<span style="color:#ff4757">illicit</span>':'<span style="color:#2dd4bf">licit</span>'}<br>model P(illicit): <b>${(D.p[i]*100).toFixed(1)}%</b>`+(D.step[i]<=27?'<br><span style="color:#9a9aa8">in training data</span>':'<br>'+((D.p[i]>=THR)===!!y?'<span style="color:#34d399">model correct</span>':'<span style="color:#ffc857">model wrong</span>')); } else tip.style.display='none'; });
 canvas.addEventListener('pointerdown',()=>canvas.style.cursor='grabbing'); addEventListener('pointerup',()=>canvas.style.cursor='grab');
 function resize(){const w=canvas.clientWidth,h=canvas.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();}
-addEventListener('resize',resize); resize(); paint();
+addEventListener('resize',resize); resize(); paint(); window.csReady();
 (function loop(){controls.update();renderer.render(scene,camera);requestAnimationFrame(loop);})();
 </script></body></html>"""
 
 
 def universe_html(data):
-    return UNIVERSE.replace("__FONTS__", FONTS).replace("__IMPORTMAP__", IMPORTMAP).replace("__DATA__", json.dumps(data, separators=(",", ":")))
+    return UNIVERSE.replace("__FONTS__", FONTS).replace("__IMPORTMAP__", IMPORTMAP).replace("__LOADER__", LOADER).replace("__DATA__", json.dumps(data, separators=(",", ":")))
