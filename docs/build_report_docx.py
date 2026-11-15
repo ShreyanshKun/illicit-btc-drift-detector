@@ -3,6 +3,7 @@
 Usage:  python docs/build_report_docx.py
 """
 import re
+import sys
 from pathlib import Path
 
 from docx import Document
@@ -14,6 +15,8 @@ from docx.shared import Inches, Pt, RGBColor
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "reports" / "REPORT.md"
 OUT = ROOT / "reports" / "REPORT.docx"
+if len(sys.argv) == 3:                      # optional: python docs/build_report_docx.py in.md out.docx
+    SRC, OUT = Path(sys.argv[1]).resolve(), Path(sys.argv[2]).resolve()
 
 
 def add_runs(par, text):

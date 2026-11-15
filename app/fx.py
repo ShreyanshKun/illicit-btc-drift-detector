@@ -20,7 +20,8 @@ const cv = D.createElement('canvas'); cv.id = 'cs-bg';
 cv.style.cssText = 'position:fixed;inset:0;width:100vw;height:100vh;z-index:0;pointer-events:none;opacity:.9';
 root.appendChild(cv);
 const ctx = cv.getContext('2d'); let W, H, dpr = Math.min(P.devicePixelRatio || 1, 2);
-const mouse = {x:-999, y:-999}; const N = 70, pts = [];
+const TOUCH = P.matchMedia('(hover: none)').matches, SMALL = P.innerWidth < 820;
+const mouse = {x:-999, y:-999}; const N = SMALL ? 26 : 70, pts = [];
 function size(){ W = P.innerWidth; H = P.innerHeight; cv.width = W*dpr; cv.height = H*dpr; ctx.setTransform(dpr,0,0,dpr,0,0); }
 size(); P.addEventListener('resize', size);
 for (let i=0;i<N;i++) pts.push({x:Math.random()*W, y:Math.random()*H, vx:(Math.random()-.5)*.28, vy:(Math.random()-.5)*.28, bad:Math.random()<.08});
@@ -40,12 +41,12 @@ tick();
 const sp = D.createElement('div'); sp.id='cs-spot';
 sp.style.cssText = 'position:fixed;left:0;top:0;width:520px;height:520px;margin:-260px 0 0 -260px;border-radius:50%;pointer-events:none;z-index:2;mix-blend-mode:screen;'+
   'background:radial-gradient(circle,rgba(247,147,26,.10) 0%,rgba(247,147,26,.04) 40%,transparent 70%);transition:opacity .3s';
-root.appendChild(sp);
-D.addEventListener('mousemove', e=>{ mouse.x=e.clientX; mouse.y=e.clientY; sp.style.transform=`translate(${e.clientX}px,${e.clientY}px)`; });
+if (!TOUCH) root.appendChild(sp);
+if (!TOUCH) D.addEventListener('mousemove', e=>{ mouse.x=e.clientX; mouse.y=e.clientY; sp.style.transform=`translate(${e.clientX}px,${e.clientY}px)`; });
 
 /* ---- 3-D tilt with glare on cards ---- */
 const SEL = '.card,.kpi,.step,.verdict';
-D.addEventListener('mousemove', e=>{
+if (!TOUCH) D.addEventListener('mousemove', e=>{
   const el = e.target.closest ? e.target.closest(SEL) : null;
   if (D.__tilted && D.__tilted !== el){ D.__tilted.style.transform=''; D.__tilted.style.removeProperty('--gx'); D.__tilted = null; }
   if (!el) return; D.__tilted = el;
@@ -75,13 +76,46 @@ D.addEventListener('click', e=>{
   if(getComputedStyle(el).position==='static') el.style.position='relative'; el.style.overflow='hidden'; el.appendChild(s); setTimeout(()=>s.remove(),650);
 });
 
-/* ---- magnetic pull on nav links ---- */
-D.addEventListener('mousemove', e=>{
-  D.querySelectorAll('[data-testid="stTopNavLink"]').forEach(a=>{
-    const r=a.getBoundingClientRect(), cx=r.left+r.width/2, cy=r.top+r.height/2, dx=e.clientX-cx, dy=e.clientY-cy;
-    a.style.translate = (Math.hypot(dx,dy)<90) ? `${dx*0.12}px ${dy*0.2}px` : '';
+/* ---- "lens" nav: a liquid highlight that glides to the hovered / active link ---- */
+function setupLens(){
+  const links = [...D.querySelectorAll('[data-testid="stTopNavLink"]')]; if (links.length < 2) return;
+  let box = links[0]; while (box && !links.every(l => box.contains(l))) box = box.parentElement; if (!box || box.dataset.lens) return; box.dataset.lens = '1'; box.classList.add('cs-nav');
+  const trail = D.createElement('div'), lens = D.createElement('div'); trail.className = 'cs-trail'; lens.className = 'cs-lens';
+  box.prepend(lens); box.prepend(trail);
+  const active = () => links.find(l => l.getAttribute('aria-current') === 'page') || links[0];
+  function go(el, mode){
+    const bx = box.getBoundingClientRect(), r = el.getBoundingClientRect(), x = r.left - bx.left, w = r.width;
+    for (const e of [lens, trail]){ e.style.transform = `translateX(${x}px)`; e.style.width = w + 'px'; e.style.opacity = e === trail ? (mode==='hover' ? .9 : .5) : 1; }
+    box.dataset.mode = mode; links.forEach(l => l.classList.toggle('cs-under', l === el));
+  }
+  links.forEach(l => { l.addEventListener('mouseenter', () => go(l, l === active() ? 'solid' : 'hover')); });
+  box.addEventListener('mouseleave', () => go(active(), 'solid'));
+  P.addEventListener('resize', () => go(active(), 'solid'));
+  go(active(), 'solid'); setInterval(() => { if (box.dataset.mode === 'solid') go(active(), 'solid'); }, 600);
+}
+
+/* ---- phone dock: bottom tab bar of hexagon badges (shown by CSS under 820px) ---- */
+const PAGES = [['Home','overview'],['Scan','scanner'],['3D','universe'],['Lab','model-lab'],['Drift','drift-radar'],['Why','explainer'],['Guide','field-guide']];
+function setupDock(){
+  if (D.getElementById('cs-dock')) return;
+  const dock = D.createElement('div'); dock.id = 'cs-dock';
+  dock.innerHTML = '<div class="row"><div class="bar"></div>' + PAGES.map((p,i) => `<a href="#" data-p="${p[1]}"><span class="hx">${i+1}</span><span class="lb">${p[0]}</span></a>`).join('') + '</div>';
+  D.body.appendChild(dock);
+  const cur = () => { const seg = P.location.pathname.split('/').filter(Boolean).pop() || 'overview'; return PAGES.findIndex(p => p[1] === seg) < 0 ? 0 : PAGES.findIndex(p => p[1] === seg); };
+  function sync(){ const i = cur(); dock.querySelectorAll('a').forEach((a,k) => a.classList.toggle('on', k === i)); dock.querySelector('.bar').style.transform = `translateX(${i*100}%)`; }
+  dock.addEventListener('click', e => {
+    const a = e.target.closest('a'); if (!a) return; e.preventDefault();
+    const slug = a.dataset.p; try{ P.navigator.vibrate && P.navigator.vibrate(8); }catch(_){}
+    const known = PAGES.map(q => q[1]), base = P.location.pathname.replace(/\/+$/, '').split('/').filter((x, i, arr) => !(i === arr.length - 1 && known.includes(x))).join('/');
+    const real = [...D.querySelectorAll('a[href]')].find(l => { if (l.closest('#cs-dock')) return false; const q = l.pathname.replace(/\/+$/, '');
+      return slug === 'overview' ? (q === base) : q.endsWith('/' + slug); });             // Streamlit's own link keeps the session alive
+    if (real){ real.click(); } else { P.location.href = (slug === 'overview' ? (base || '/') : base + '/' + slug); }
+    setTimeout(sync, 150);
   });
-});
+  sync(); setInterval(sync, 500);
+}
+new P.MutationObserver(() => { setupLens(); setupDock(); }).observe(D.body, {childList:true, subtree:true});
+setupLens(); setupDock();
 
 /* ---- scroll progress ---- */
 const bar = D.createElement('div'); bar.id='cs-prog';

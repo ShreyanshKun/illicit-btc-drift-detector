@@ -40,6 +40,13 @@ p{font-size:17px;line-height:1.5;color:#c9c9d4;margin:0 0 18px}
 .legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
 .flash{position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,rgba(255,71,87,.45),transparent 62%);opacity:0;pointer-events:none;transition:opacity .25s}
 .hint{position:absolute;right:28px;top:20px;font-family:'JetBrains Mono';font-size:11px;color:#6d6d7c;letter-spacing:.12em}
+@media(max-width:700px){
+.shade{background:linear-gradient(180deg,rgba(11,11,14,.9) 0%,rgba(11,11,14,.6) 55%,rgba(11,11,14,.1) 100%)}
+.copy{left:16px;right:16px;top:16px;transform:none;max-width:none}
+.kick{font-size:10px}h1{font-size:19px;margin:8px 0 8px}p{font-size:13px;margin:0 0 10px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.badges span{font-size:10px;padding:3px 7px;margin:0 5px 5px 0}.badges span:nth-child(3){display:none}
+.hud{right:14px;bottom:12px}.hud .s{font-size:24px}.hud .t{font-size:10px}
+.legend{left:14px;bottom:12px;gap:9px;font-size:10px;flex-wrap:wrap;max-width:56%}.hint{display:none}}
 </style></head><body>
 __LOADER__<canvas id="c"></canvas><div class="shade"></div><div class="flash" id="flash"></div>
 <div class="copy"><div class="kick">Intro to Data Science · Elliptic dataset</div>
@@ -129,6 +136,10 @@ button.pl{background:#f7931a;border:0;border-radius:6px;color:#1a0f00;font-weigh
 .stats{position:absolute;right:16px;bottom:14px;text-align:right;font-family:'JetBrains Mono';font-size:12px;line-height:1.6;color:#c9c9d4;background:rgba(11,11,14,.72);padding:8px 12px;border-radius:10px;border:1px solid #2a2a35}
 .stats b{color:#f2f2f5}
 #tip{position:absolute;pointer-events:none;display:none;background:rgba(11,11,14,.94);border:1px solid #f7931a;border-radius:8px;padding:8px 11px;font-family:'JetBrains Mono';font-size:12px;line-height:1.5;white-space:nowrap}
+@media(max-width:700px){
+.bar{left:8px;right:8px;top:8px;gap:6px}.seg button{padding:6px 9px;font-size:10px}.panel{padding:5px 8px;font-size:10px;gap:6px}
+input[type=range]{width:96px}button.pl{padding:3px 7px}
+.legend{left:8px;bottom:8px;gap:8px;font-size:10px;padding:6px 8px;max-width:58%}.stats{right:8px;bottom:8px;font-size:10px;padding:6px 8px;max-width:40%}}
 </style></head><body>
 __LOADER__<canvas id="c"></canvas>
 <div class="bar">

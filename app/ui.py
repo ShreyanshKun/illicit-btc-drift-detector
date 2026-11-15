@@ -28,33 +28,35 @@ h3 {{ font-size: 1.25rem !important; }}
 .block-container {{ padding-top: 2rem; max-width: 1250px; }}
 
 /* ---------- top navigation bar ---------- */
-[data-testid="stSidebar"], [data-testid="stSidebarCollapsedControl"] {{ display: none !important; }}
+[data-testid="stSidebar"], [data-testid="stSidebarCollapsedControl"], [data-testid="stExpandSidebarButton"], [data-testid="stSidebarCollapseButton"] {{ display: none !important; }}
 [data-testid="stHeader"] {{ background: rgba(11,11,14,0.72) !important; backdrop-filter: blur(14px) saturate(140%);
     border-bottom: 1px solid rgba(247,147,26,0.22); box-shadow: 0 8px 30px rgba(0,0,0,0.35); height: 3.6rem; }}
 [data-testid="stHeader"] img {{ height: 38px; }}
-[data-testid="stTopNavLinkContainer"] {{ gap: 4px; }}
-[data-testid="stTopNavLink"], [data-testid="stHeader"] a[href*="localhost"], [data-testid="stHeader"] nav a {{ border-radius: 999px !important; padding: 7px 16px !important;
-    font-family: 'Unbounded' !important; font-weight: 600 !important; transition: all .18s ease; color: #c9c9d4 !important; }}
-[data-testid="stTopNavLink"], [data-testid="stHeader"] nav a {{ position: relative; overflow: hidden; isolation: isolate; font-family: 'Unbounded' !important; font-size: .74rem !important; font-weight: 500 !important; letter-spacing: .02em;
-    transition: color .3s, transform .35s cubic-bezier(.2,.9,.3,1.4), box-shadow .35s; }}
-/* liquid fill that sweeps in from the left */
-[data-testid="stTopNavLink"]:before, [data-testid="stHeader"] nav a:before {{ content: ''; position: absolute; inset: 0; z-index: -1; border-radius: inherit;
-    background: linear-gradient(110deg, rgba(247,147,26,.0), rgba(247,147,26,.38) 45%, rgba(255,200,87,.30)); transform: translateX(-101%) skewX(-18deg); transition: transform .5s cubic-bezier(.2,.8,.2,1); }}
-/* underline that grows from the centre */
-[data-testid="stTopNavLink"]:after, [data-testid="stHeader"] nav a:after {{ content: ''; position: absolute; left: 50%; bottom: 3px; height: 2px; width: 0; border-radius: 2px; transform: translateX(-50%);
-    background: linear-gradient(90deg, #ffc857, #f7931a); box-shadow: 0 0 10px #f7931a; transition: width .35s cubic-bezier(.2,.8,.2,1); }}
-[data-testid="stTopNavLink"]:hover, [data-testid="stHeader"] nav a:hover {{ color: #fff !important; transform: translateY(-3px) scale(1.06); box-shadow: 0 10px 24px rgba(247,147,26,.28), inset 0 0 0 1px rgba(247,147,26,.45); }}
-[data-testid="stTopNavLink"]:hover:before, [data-testid="stHeader"] nav a:hover:before {{ transform: translateX(0) skewX(0); }}
-[data-testid="stTopNavLink"]:hover:after, [data-testid="stHeader"] nav a:hover:after {{ width: 60%; }}
-[data-testid="stTopNavLink"]:active, [data-testid="stHeader"] nav a:active {{ transform: translateY(0) scale(.96); }}
-[data-testid="stTopNavLink"] [data-testid="stIconMaterial"], [data-testid="stHeader"] nav a span[class*="icon"] {{ transition: transform .5s cubic-bezier(.2,.9,.3,1.6), color .3s; }}
-[data-testid="stTopNavLink"]:hover [data-testid="stIconMaterial"], [data-testid="stHeader"] nav a:hover span[class*="icon"] {{ transform: rotate(-14deg) scale(1.3); color: #ffc857; }}
-[data-testid="stTopNavLink"][aria-current="page"], [data-testid="stHeader"] nav a[aria-current="page"] {{ background: linear-gradient(135deg, #f7931a, #c46f08) !important; color: #1a0f00 !important;
-    box-shadow: 0 0 22px rgba(247,147,26,0.45); }}
-[data-testid="stTopNavLink"][aria-current="page"]:after {{ background: #1a0f00; box-shadow: none; }}
-/* ripple (added by fx.js on click) */
+/* "Lens" navigation: a glass capsule with a liquid highlight that glides to whatever you point at (positioned by fx.py) */
+[data-testid="stTopNavLinkContainer"] {{ gap: 0 !important; }}
+.cs-nav {{ position: relative; display: flex; align-items: center; gap: 2px; padding: 5px; border-radius: 999px; background: rgba(255,255,255,.035);
+    border: 1px solid rgba(247,147,26,.25); box-shadow: inset 0 0 18px rgba(247,147,26,.06), 0 6px 24px rgba(0,0,0,.35); }}
+[data-testid="stTopNavLink"], [data-testid="stHeader"] nav a {{ position: relative; z-index: 2; border-radius: 999px !important; padding: 6px 11px !important; background: transparent !important;
+    font-family: 'Unbounded' !important; font-size: .64rem !important; font-weight: 500 !important; letter-spacing: .02em; color: #b4b4c2 !important;
+    transition: color .25s, transform .3s cubic-bezier(.2,.9,.3,1.5); }}
+[data-testid="stTopNavLink"]:hover, [data-testid="stHeader"] nav a:hover {{ color: #fff !important; transform: translateY(-1px); }}
+[data-testid="stTopNavLink"]:active {{ transform: scale(.94); }}
+[data-testid="stTopNavLink"][aria-current="page"] {{ color: #ffc857 !important; }}
+[data-testid="stTopNavLink"] [data-testid="stIconMaterial"] {{ transition: transform .5s cubic-bezier(.2,.9,.3,1.7), color .3s; }}
+[data-testid="stTopNavLink"]:hover [data-testid="stIconMaterial"] {{ transform: rotate(-16deg) scale(1.35); }}
+.cs-lens, .cs-trail {{ position: absolute; top: 5px; bottom: 5px; left: 0; width: 0; border-radius: 999px; pointer-events: none; z-index: 1; opacity: 0; }}
+.cs-lens {{ background: linear-gradient(135deg, #ffb340, #f7931a 55%, #c46f08); box-shadow: 0 0 22px rgba(247,147,26,.55), inset 0 1px 0 rgba(255,255,255,.35);
+    transition: transform .42s cubic-bezier(.34,1.45,.5,1), width .42s cubic-bezier(.34,1.45,.5,1), opacity .3s, background .3s, box-shadow .3s; }}
+.cs-trail {{ z-index: 0; background: rgba(247,147,26,.5); filter: blur(10px); transition: transform .8s cubic-bezier(.2,.8,.2,1), width .8s cubic-bezier(.2,.8,.2,1), opacity .3s; }}
+.cs-nav[data-mode="hover"] .cs-lens {{ background: rgba(247,147,26,.22); box-shadow: 0 0 20px rgba(247,147,26,.35), inset 0 0 0 1px rgba(255,200,87,.55); }}
+.cs-nav[data-mode="solid"] .cs-under {{ color: #1a0f00 !important; font-weight: 600 !important; }}
+.cs-nav[data-mode="hover"] .cs-under {{ color: #fff !important; }}
+/* ripple (added by fx.py on click) */
 .cs-rip {{ position: absolute; border-radius: 50%; pointer-events: none; background: rgba(255,200,87,.55); transform: scale(0); animation: rip .6s ease-out forwards; }}
 @keyframes rip {{ to {{ transform: scale(4); opacity: 0; }} }}
+
+/* ---------- phone dock (built by fx.py, only visible on small screens) ---------- */
+#cs-dock {{ display: none; }}
 [data-testid="stAppViewContainer"] {{ position: relative; z-index: 1; }}
 .block-container {{ animation: pagein .55s cubic-bezier(.2,.8,.2,1) both; }}
 @keyframes pagein {{ from {{ opacity: 0; transform: translateY(14px); }} to {{ opacity: 1; transform: none; }} }}
@@ -157,7 +159,53 @@ div[data-testid="stMetric"] {{ background: {PANEL}; border: 1px solid {BORDER}; 
 .stTabs [data-baseweb="tab"] {{ transition: color .25s, transform .25s; }} .stTabs [data-baseweb="tab"]:hover {{ transform: translateY(-2px); color: {BTC}; }}
 [data-testid="stHorizontalBlock"] > div:nth-child(2) .kpi {{ animation-delay: .08s; }} [data-testid="stHorizontalBlock"] > div:nth-child(3) .kpi {{ animation-delay: .16s; }}
 [data-testid="stHorizontalBlock"] > div:nth-child(4) .kpi {{ animation-delay: .24s; }} [data-testid="stHorizontalBlock"] > div:nth-child(5) .kpi {{ animation-delay: .32s; }}
+.kpi:after {{ content: ''; position: absolute; right: -30px; top: -30px; width: 90px; height: 90px; border-radius: 50%; background: radial-gradient(circle, rgba(247,147,26,.16), transparent 70%); transition: transform .5s; }}
+.kpi:hover:after {{ transform: scale(2.2); }}
+.tone-good:after {{ background: radial-gradient(circle, rgba(52,211,153,.18), transparent 70%); }} .tone-bad:after {{ background: radial-gradient(circle, rgba(255,71,87,.2), transparent 70%); }}
+h3 {{ position: relative; padding-left: 16px !important; }} h3:before {{ content: ''; position: absolute; left: 0; top: .25em; bottom: .25em; width: 4px; border-radius: 3px; background: linear-gradient(180deg, {GOLD}, {BTC}); box-shadow: 0 0 10px rgba(247,147,26,.6); }}
 @media (prefers-reduced-motion: reduce) {{ * {{ animation: none !important; transition: none !important; }} }}
+/* ---------- phone / tablet ---------- */
+@media (max-width: 820px) {{
+  [data-testid="stTopNavLinkContainer"], [data-testid="stHeader"] nav {{ display: none !important; }}
+  html {{ font-size: 15px; }}
+  [data-testid="stHeader"] {{ height: 3rem; }} [data-testid="stHeader"] img {{ height: 30px; }}
+  .block-container {{ padding: 4.2rem .85rem 7.5rem !important; }}
+  .hero {{ padding: 22px 18px; border-radius: 18px; margin-bottom: 16px; }}
+  .hero h1 {{ font-size: 1.35rem; line-height: 1.2; }} .hero p {{ font-size: .92rem; }}
+  .hero:after {{ width: 220px; height: 220px; right: -70px; top: -70px; }}
+  .kicker {{ font-size: .62rem; }} .badge {{ font-size: .66rem; padding: 3px 8px; margin: 10px 6px 0 0; }}
+  h3 {{ font-size: 1.02rem !important; }}
+  .kpi {{ min-height: 86px; padding: 12px 14px; }} .kpi .v {{ font-size: 1.4rem; }} .kpi .l {{ font-size: .6rem; }}
+  .card {{ min-height: 0; padding: 14px 16px; }}
+  .step {{ flex: 1 1 100%; }}
+  .verdict {{ padding: 16px 18px; }} .verdict .t {{ font-size: 1.05rem; }}
+  .callout {{ padding: 11px 14px; font-size: .88rem; }}
+  .chain.big .blk {{ width: 15px; height: 15px; }}
+  .explain {{ gap: 8px; }} .explain > div {{ padding: 10px 13px; }} .explain span {{ font-size: .84rem; line-height: 1.45; }}
+  .stButton>button, .stDownloadButton>button {{ min-height: 46px; width: 100%; }}
+  div[data-testid="stMetric"] {{ padding: 8px 10px; }}
+  iframe[height="560"] {{ height: 470px !important; }} iframe[height="700"] {{ height: 560px !important; }}
+  .stTabs [data-baseweb="tab"] {{ padding: 8px 10px; font-size: .74rem; }}
+  .js-plotly-plot {{ max-width: 100%; }}
+
+  #cs-dock {{ display: block; position: fixed; z-index: 99990; left: 10px; right: 10px; bottom: calc(10px + env(safe-area-inset-bottom)); height: 64px; border-radius: 22px;
+      background: rgba(14,14,19,.82); backdrop-filter: blur(16px) saturate(150%); border: 1px solid rgba(247,147,26,.3); box-shadow: 0 10px 34px rgba(0,0,0,.6), inset 0 0 22px rgba(247,147,26,.06); }}
+  #cs-dock .row {{ position: relative; display: grid; grid-template-columns: repeat(7, 1fr); height: 100%; }}
+  #cs-dock a {{ position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: #8f8fa0; text-decoration: none; -webkit-tap-highlight-color: transparent; }}
+  #cs-dock .hx {{ width: 26px; height: 26px; clip-path: polygon(25% 5%, 75% 5%, 100% 50%, 75% 95%, 25% 95%, 0 50%); background: #2c2c38; display: flex; align-items: center; justify-content: center;
+      font: 700 11px 'JetBrains Mono', monospace; color: #cfcfdc; transition: transform .4s cubic-bezier(.3,1.6,.5,1), background .3s, color .3s; }}
+  #cs-dock .lb {{ font: 600 8.5px 'Unbounded', sans-serif; letter-spacing: .02em; transition: color .3s; }}
+  #cs-dock a.on .hx {{ background: linear-gradient(135deg, #ffb340, #f7931a); color: #1a0f00; transform: translateY(-5px) scale(1.22); box-shadow: 0 0 16px rgba(247,147,26,.8); }}
+  #cs-dock a.on .lb {{ color: #ffc857; transform: translateY(-2px); }}
+  #cs-dock a:active .hx {{ transform: scale(.82); }}
+  #cs-dock .bar {{ position: absolute; z-index: 1; top: -1px; left: 0; width: calc(100% / 7); height: 3px; display: flex; justify-content: center; transition: transform .45s cubic-bezier(.34,1.45,.5,1); }}
+  #cs-dock .bar:before {{ content: ''; width: 46%; height: 100%; border-radius: 3px; background: linear-gradient(90deg, #ffc857, #f7931a); box-shadow: 0 0 12px #f7931a, 0 6px 18px rgba(247,147,26,.55); }}
+}}
+@media (hover: none) {{
+  .card:hover, .kpi:hover, .step:hover {{ background-image: none; box-shadow: none; }}
+  .card:hover:before {{ left: -60%; }} .blk:hover {{ transform: none; box-shadow: none; }}
+}}
+@media (max-width: 420px) {{ .hero h1 {{ font-size: 1.2rem; }} #cs-dock .lb {{ font-size: 7.5px; }} }}
 @media (max-width: 800px) {{ .explain {{ grid-template-columns: 1fr; }} .hero h1 {{ font-size: 1.8rem; }} }}
 </style>
 """

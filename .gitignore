@@ -20,3 +20,6 @@ kaggle.json
 .DS_Store
 Thumbs.db
 .vscode/
+
+# Personal notes / learning material (never pushed)
+learning/
